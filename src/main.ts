@@ -1,8 +1,9 @@
-import {vec3} from 'gl-matrix';
+import {vec3, vec4} from 'gl-matrix';
 const Stats = require('stats-js');
 import * as DAT from 'dat.gui';
 import Icosphere from './geometry/Icosphere';
 import Square from './geometry/Square';
+import Cube from './geometry/Cube';
 import OpenGLRenderer from './rendering/gl/OpenGLRenderer';
 import Camera from './Camera';
 import {setGL} from './globals';
@@ -12,18 +13,27 @@ import ShaderProgram, {Shader} from './rendering/gl/ShaderProgram';
 // This will be referred to by dat.GUI's functions that add GUI elements.
 const controls = {
   tesselations: 5,
+  Red: 1,
+  Green: 0,
+  Blue: 0,
   'Load Scene': loadScene, // A function pointer, essentially
 };
 
 let icosphere: Icosphere;
 let square: Square;
+let cube: Cube;
 let prevTesselations: number = 5;
+let prevRed: number = 1;
+let prevGreen: number = 0;
+let prevBlue: number = 0;
 
 function loadScene() {
-  icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, controls.tesselations);
-  icosphere.create();
-  square = new Square(vec3.fromValues(0, 0, 0));
-  square.create();
+  // icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, controls.tesselations);
+  // icosphere.create();
+  // square = new Square(vec3.fromValues(0, 0, 0));
+  // square.create();
+  cube = new Cube(vec3.fromValues(0, 0, 0));
+  cube.create();
 }
 
 function main() {
@@ -38,6 +48,9 @@ function main() {
   // Add controls to the gui
   const gui = new DAT.GUI();
   gui.add(controls, 'tesselations', 0, 8).step(1);
+  gui.add(controls, 'Red', 0, 1).step(0.01);
+  gui.add(controls, 'Green', 0, 1).step(0.01);
+  gui.add(controls, 'Blue', 0, 1).step(0.01);
   gui.add(controls, 'Load Scene');
 
   // get canvas and webgl context
@@ -70,15 +83,25 @@ function main() {
     stats.begin();
     gl.viewport(0, 0, window.innerWidth, window.innerHeight);
     renderer.clear();
-    if(controls.tesselations != prevTesselations)
-    {
-      prevTesselations = controls.tesselations;
-      icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, prevTesselations);
-      icosphere.create();
+    // if(controls.tesselations != prevTesselations)
+    // {
+    //   prevTesselations = controls.tesselations;
+    //   icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, prevTesselations);
+    //   icosphere.create();
+    // }
+    if (controls.Red != prevRed) {
+      prevRed = controls.Red;
     }
-    renderer.render(camera, lambert, [
-      icosphere,
+    if (controls.Green != prevGreen) {
+      prevGreen = controls.Green;
+    }
+    if (controls.Blue != prevBlue) {
+      prevBlue = controls.Blue;
+    }
+    renderer.render(camera, lambert, vec4.fromValues(controls.Red, controls.Green, controls.Blue, 1), [
+      //icosphere,
       // square,
+      cube
     ]);
     stats.end();
 
