@@ -26,6 +26,7 @@ let prevTesselations: number = 5;
 let prevRed: number = 1;
 let prevGreen: number = 0;
 let prevBlue: number = 0;
+let time: number = 0.0;
 
 function loadScene() {
   // icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, controls.tesselations);
@@ -73,12 +74,18 @@ function main() {
   gl.enable(gl.DEPTH_TEST);
 
   const lambert = new ShaderProgram([
-    new Shader(gl.VERTEX_SHADER, require('./shaders/lambert-vert.glsl')),
+    new Shader(gl.VERTEX_SHADER, require('./shaders/custom-vert.glsl')),
     new Shader(gl.FRAGMENT_SHADER, require('./shaders/lambert-frag.glsl')),
   ]);
 
+  // const custom = new ShaderProgram([
+  //   new Shader(gl.VERTEX_SHADER, require('./shaders/custom-vert.glsl')),
+  //   new Shader(gl.FRAGMENT_SHADER, require('./shaders/custom-frag.glsl')),
+  // ]);
+
   // This function will be called every frame
   function tick() {
+    time += 0.01;
     camera.update();
     stats.begin();
     gl.viewport(0, 0, window.innerWidth, window.innerHeight);
@@ -98,7 +105,7 @@ function main() {
     if (controls.Blue != prevBlue) {
       prevBlue = controls.Blue;
     }
-    renderer.render(camera, lambert, vec4.fromValues(controls.Red, controls.Green, controls.Blue, 1), [
+    renderer.render(camera, lambert, vec4.fromValues(controls.Red, controls.Green, controls.Blue, 1), time, [
       //icosphere,
       // square,
       cube
