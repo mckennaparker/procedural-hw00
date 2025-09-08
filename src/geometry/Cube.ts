@@ -16,16 +16,16 @@ class Cube extends Drawable {
     create() {
         this.indices = new Uint32Array([0, 1, 2, //front left triangle
                                         0, 2, 3, //front right triangle
-                                        1, 5, 6, //top left triangle
-                                        1, 6, 2, //top right triangle
-                                        3, 2, 6, // right front triangle
-                                        3, 6, 7, // right back triangle
-                                        0, 4, 7, //bottom left triangle
-                                        0, 7, 3, //bottom right triangle
-                                        4, 5, 1, // left back triangle
-                                        4, 1, 0, // left front triangle
-                                        4, 5, 6, //back left triangle
-                                        4, 6, 7]); //back right triangle
+                                        4, 5, 6, //top left triangle
+                                        4, 6, 7, //top right triangle
+                                        8, 9, 10, // right front triangle
+                                        8, 10, 11, // right back triangle
+                                        12, 13, 14, // bottom right triangle
+                                        12, 14, 15, // bottom left triangle
+                                        16, 17, 18, // left back triangle
+                                        16, 18, 19, // left front triangle
+                                        20, 21, 22, // back top triangle
+                                        20, 22, 23]); // back bottom triangle
 
         this.normals = new Float32Array([0, 0, 1, 0, //front face normal
                                          0, 0, 1, 0, //front face normal
@@ -56,11 +56,28 @@ class Cube extends Drawable {
                                            -1, 1, 1, 1, //front top left
                                            1, 1, 1, 1, //front top right
                                            1, -1, 1, 1, //front bottom right
+                                           -1, 1, 1, 1, //top front left
+                                           -1, 1, -1, 1, //top back left
+                                           1, 1, -1, 1, //top back right
+                                           1, 1, 1, 1, //top front right
+                                           1, -1, 1, 1, //right front bottom
+                                           1, 1, 1, 1, //right front top
+                                           1, 1, -1, 1, //right back top
+                                           1, -1, -1, 1, //right back bottom
+                                           -1, -1, 1, 1, //bottom front left
+                                           -1, -1, -1, 1, //bottom back left
+                                           1, -1, -1, 1, //bottom back right
+                                           1, -1, 1, 1, //bottom front right
+                                           -1, -1, 1, 1, //left front bottom
+                                           -1, -1, -1, 1, //left back bottom
+                                           -1, 1, -1, 1, //left back top
+                                           -1, 1, 1, 1, //left front top
                                            -1, -1, -1, 1, //back bottom left
                                            -1, 1, -1, 1, //back top left
                                            1, 1, -1, 1, //back top right
                                            1, -1, -1, 1, //back bottom right
                                         ]);
+        
         this.generateIdx();
         this.generatePos();
         this.generateNor();
