@@ -53,7 +53,7 @@ function main() {
   gui.add(controls, 'Blue', 0, 1).step(0.01);
   gui.add(controls, 'Load Scene');
 
-  // get canvas and webgl context
+  // Get canvas and webgl context
   const canvas = <HTMLCanvasElement> document.getElementById('canvas');
   const gl = <WebGL2RenderingContext> canvas.getContext('webgl2');
   if (!gl) {
