@@ -1,5 +1,8 @@
 # HW 0: Intro to Javascript and WebGL
 
+## Project Description
+For my procedural noise geometry, I implemented a fairly simple custom vertex shader that changes vertex position non-uniformly by passing the time variable into a trigonometric function. My custom fragment shader was a bit more complex and uses multiple random noise functions as well as worley noise and fractal brownian motion to place hot spots of concentric circles all over the geometric shape and shift the colors of the model using worley noise and trigonometric functions.
+
 <p align="center">
   <img width="360" height="360" src="https://user-images.githubusercontent.com/1758825/132532354-e3a45402-e484-499e-bfa7-2d73b9f2c946.png">
 </p>
