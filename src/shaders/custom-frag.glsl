@@ -101,7 +101,7 @@ float getBias(float x, float bias)
 
 void main()
 {
-    float noise = worley(fs_Pos.xyz + 2.0 * getBias(cos(u_Time/ 10.f), 0.2), worley(fs_Pos.xyz + u_Time / 10.f, 2.0));
+    float noise = worley(fs_Pos.xyz + 0.5 * getBias(cos(u_Time/ 10.f), 0.2), worley(fs_Pos.xyz + u_Time / 10.f, 0.4));
 
     vec4 diffuseColor =  vec4(noise * 0.5 + 0.2 * sin(u_Time), noise * 0.3 + 0.3 * cos(u_Time), noise * 0.7 + 0.5 * sin(u_Time), 1) + u_Color;
 
