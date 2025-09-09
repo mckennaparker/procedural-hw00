@@ -30,6 +30,7 @@ in vec4 vs_Col;             // The array of vertex colors passed to the shader.
 out vec4 fs_Nor;            // The array of normals that has been transformed by u_ModelInvTr. This is implicitly passed to the fragment shader.
 out vec4 fs_LightVec;       // The direction in which our virtual light lies, relative to each vertex. This is implicitly passed to the fragment shader.
 out vec4 fs_Col;            // The color of each vertex. This is implicitly passed to the fragment shader.
+out vec4 fs_Pos;
 
 const vec4 lightPos = vec4(5, 5, 3, 1); //The position of our virtual light, which is used to compute the shading of
                                         //the geometry in the fragment shader.
@@ -37,6 +38,13 @@ const vec4 lightPos = vec4(5, 5, 3, 1); //The position of our virtual light, whi
 void main()
 {
     fs_Col = vs_Col;                         // Pass the vertex colors to the fragment shader for interpolation
+    fs_Pos = vs_Pos;
+
+    // Non-uniform trigonometric deformation
+    vec4 newPos = vs_Pos;
+    newPos.x += 0.23 * cos(u_Time * 0.3 + vs_Pos.y * 0.1);
+    newPos.y += 0.87 * sin(u_Time * 0.1 + vs_Pos.z * 0.3);
+    newPos.z += 0.46 * cos(u_Time * 0.5 + vs_Pos.x * 0.2);
 
     mat3 invTranspose = mat3(u_ModelInvTr);
     fs_Nor = vec4(invTranspose * vec3(vs_Nor), 0);          // Pass the vertex normals to the fragment shader for interpolation.
@@ -46,8 +54,7 @@ void main()
                                                             // the model matrix.
 
 
-    vec4 new_Pos = vec4(sin(vs_Pos.r * u_Time * 0.1), sin(vs_Pos.g * u_Time * 0.3), sin(vs_Pos.b * u_Time * 0.2), 1);
-    vec4 modelposition = u_Model * new_Pos;   // Temporarily store the transformed vertex positions for use below
+    vec4 modelposition = u_Model * newPos;   // Temporarily store the transformed vertex positions for use below
 
     fs_LightVec = lightPos - modelposition;  // Compute the direction in which the light source lies
 
