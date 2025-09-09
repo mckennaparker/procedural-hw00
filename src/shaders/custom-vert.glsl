@@ -42,9 +42,9 @@ void main()
 
     // Non-uniform trigonometric deformation
     vec4 newPos = vs_Pos;
-    newPos.x += 0.23 * cos(u_Time * 0.3 + vs_Pos.y * 0.1);
-    newPos.y += 0.87 * sin(u_Time * 0.1 + vs_Pos.z * 0.3);
-    newPos.z += 0.46 * cos(u_Time * 0.5 + vs_Pos.x * 0.2);
+    newPos.x += 0.23 * cos(u_Time * 0.3 + vs_Pos.z * 0.1);
+    newPos.y += 0.87 * sin(u_Time * 0.1 + vs_Pos.x * 0.3);
+    newPos.z += 0.46 * cos(u_Time * 0.5 + vs_Pos.y * 0.2);
 
     mat3 invTranspose = mat3(u_ModelInvTr);
     fs_Nor = vec4(invTranspose * vec3(vs_Nor), 0);          // Pass the vertex normals to the fragment shader for interpolation.
