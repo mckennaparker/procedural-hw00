@@ -12,10 +12,9 @@ import ShaderProgram, {Shader} from './rendering/gl/ShaderProgram';
 // Define an object with application parameters and button callbacks
 // This will be referred to by dat.GUI's functions that add GUI elements.
 const controls = {
-  tesselations: 5,
-  Red: 1,
-  Green: 0,
-  Blue: 0,
+  Tesselations: 5,
+  Color: [255, 0, 0],
+  Geometry: true,
   'Load Scene': loadScene, // A function pointer, essentially
 };
 
@@ -23,16 +22,15 @@ let icosphere: Icosphere;
 let square: Square;
 let cube: Cube;
 let prevTesselations: number = 5;
-let prevRed: number = 1;
-let prevGreen: number = 0;
-let prevBlue: number = 0;
+let prevColor: number[] = [255, 0, 0];
 let time: number = 0.0;
+let toDraw: Array<Cube | Icosphere> = [];
 
 function loadScene() {
-  // icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, controls.tesselations);
-  // icosphere.create();
-  // square = new Square(vec3.fromValues(0, 0, 0));
-  // square.create();
+  icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, controls.Tesselations);
+  icosphere.create();
+  square = new Square(vec3.fromValues(0, 0, 0));
+  square.create();
   cube = new Cube(vec3.fromValues(0, 0, 0));
   cube.create();
 }
@@ -48,10 +46,9 @@ function main() {
 
   // Add controls to the gui
   const gui = new DAT.GUI();
-  gui.add(controls, 'tesselations', 0, 8).step(1);
-  gui.add(controls, 'Red', 0, 1).step(0.01);
-  gui.add(controls, 'Green', 0, 1).step(0.01);
-  gui.add(controls, 'Blue', 0, 1).step(0.01);
+  gui.add(controls, 'Tesselations', 0, 8).step(1);
+  gui.addColor(controls, 'Color');
+  gui.add(controls, 'Geometry');
   gui.add(controls, 'Load Scene');
 
   // Get canvas and webgl context
@@ -73,15 +70,10 @@ function main() {
   renderer.setClearColor(0.2, 0.2, 0.2, 1);
   gl.enable(gl.DEPTH_TEST);
 
-  const lambert = new ShaderProgram([
+  const shader = new ShaderProgram([
     new Shader(gl.VERTEX_SHADER, require('./shaders/custom-vert.glsl')),
-    new Shader(gl.FRAGMENT_SHADER, require('./shaders/lambert-frag.glsl')),
+    new Shader(gl.FRAGMENT_SHADER, require('./shaders/custom-frag.glsl')),
   ]);
-
-  // const custom = new ShaderProgram([
-  //   new Shader(gl.VERTEX_SHADER, require('./shaders/custom-vert.glsl')),
-  //   new Shader(gl.FRAGMENT_SHADER, require('./shaders/custom-frag.glsl')),
-  // ]);
 
   // This function will be called every frame
   function tick() {
@@ -90,26 +82,25 @@ function main() {
     stats.begin();
     gl.viewport(0, 0, window.innerWidth, window.innerHeight);
     renderer.clear();
-    // if(controls.tesselations != prevTesselations)
-    // {
-    //   prevTesselations = controls.tesselations;
-    //   icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, prevTesselations);
-    //   icosphere.create();
-    // }
-    if (controls.Red != prevRed) {
-      prevRed = controls.Red;
+    if (controls.Geometry) {
+      icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, controls.Tesselations);
+      icosphere.create();
+      toDraw = [icosphere];
+    } else {
+      cube = new Cube(vec3.fromValues(0, 0, 0));
+      cube.create();
+      toDraw = [cube];
     }
-    if (controls.Green != prevGreen) {
-      prevGreen = controls.Green;
+    if(controls.Tesselations != prevTesselations)
+    {
+      prevTesselations = controls.Tesselations;
+      icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, prevTesselations);
+      icosphere.create();
     }
-    if (controls.Blue != prevBlue) {
-      prevBlue = controls.Blue;
+    if (controls.Color != prevColor) {
+      prevColor = controls.Color;
     }
-    renderer.render(camera, lambert, vec4.fromValues(controls.Red, controls.Green, controls.Blue, 1), time, [
-      //icosphere,
-      // square,
-      cube
-    ]);
+    renderer.render(camera, shader, vec4.fromValues(controls.Color[0] / 255, controls.Color[1] / 255, controls.Color[2] / 255, 1), time, toDraw);
     stats.end();
 
     // Tell the browser to call `tick` again whenever it renders a new frame
